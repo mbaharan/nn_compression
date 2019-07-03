@@ -1,9 +1,10 @@
 import re
 from sklearn.cluster import KMeans
 
-from slender.quantize.fixed_point import quantize_fixed_point
-from slender.quantize.linear import quantize_linear, quantize_linear_fix_zeros
-from slender.quantize.kmeans import quantize_k_means, quantize_k_means_fix_zeros
+
+from .fixed_point import quantize_fixed_point
+from .linear import quantize_linear, quantize_linear_fix_zeros
+from .kmeans import quantize_k_means, quantize_k_means_fix_zeros
 
 
 def vanilla_quantize(method='k-means', fix_zeros=True, **options):
@@ -193,7 +194,7 @@ class Quantizer(object):
             print("=" * 89)
             print("{name:^30} | qz bit | state".format(name='param_name'))
         for param_name, param in model.named_parameters():
-            if param.dim() > 1:
+            if param.dim() > 0: #> 1: # Since I am quantizing I am going to check it againt zero.
                 codebook = self.quantize_param(param.data, param_name, verbose=verbose,
                                                update_labels=update_labels,
                                                re_quantize=re_quantize)
