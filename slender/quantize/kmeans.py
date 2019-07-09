@@ -74,7 +74,7 @@ def quantize_k_means_fix_zeros(param, k=16, guess='k-means++', codebook=None,
         param_1d[codebook.labels_ == 0] = 0
 
     if codebook is None or re_quantize:
-        param_numpy = param_1d.cpu().numpy()
+        param_numpy = param_1d.cpu().detach().numpy()
         param_nz = param_numpy[param_numpy != 0]
         param_nz = param_nz.reshape(param_nz.size, 1)
 
@@ -110,6 +110,8 @@ def quantize_k_means_fix_zeros(param, k=16, guess='k-means++', codebook=None,
     param_quantize = codebook.cluster_centers_[codebook.labels_].view(param_shape)
     if not param.is_contiguous():
         param_quantize = param_quantize.contiguous()
-    param.set_(param_quantize)
+    
+    with torch.no_grad(): # Due to update to torch 1.1.0
+        param.set_(param_quantize)
 
     return codebook
