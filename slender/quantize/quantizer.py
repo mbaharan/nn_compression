@@ -195,7 +195,7 @@ class Quantizer(object):
             print("{name:^30} | qz bit | state".format(name='param_name'))
         for param_name, param in model.named_parameters():
             if param.dim() > 0: #> 1: # Since I am quantizing I am going to check it againt zero.
-                codebook = self.quantize_param(param, param_name, verbose=verbose,
+                codebook = self.quantize_param(param.data, param_name, verbose=verbose,
                                                update_labels=update_labels,
                                                re_quantize=re_quantize)
                 if codebook is not None:
