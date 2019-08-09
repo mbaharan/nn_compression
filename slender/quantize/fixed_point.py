@@ -21,3 +21,18 @@ def quantize_fixed_point(param, bit_length=8, bit_length_integer=0, **unused):
                 'method': 'fixed_point',
                 }
     return codebook
+
+def quantize_fixed_point_raw_data(param, bit_length=8, bit_length_integer=0, **unused):
+    """
+    vanilla fixed point quantization, inherently fixing zeros
+    :param param: torch.(cuda.)tensor
+    :param bit_length: int, bit length of fixed point param
+                        including sign bit, default=8
+    :param bit_length_integer: int, bit length of integer part
+                                    of fixed point param, default=0
+    :param unused: unused: unused options
+    :return:
+    """
+    div_coeff = 2 ** (bit_length_integer - bit_length + 1)
+    max_coeff = 2 ** (bit_length - 1)
+    param.floor_().clamp_(-max_coeff - 1, max_coeff - 1).mul_(div_coeff)

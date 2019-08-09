@@ -132,6 +132,7 @@ class Quantizer(object):
             dict, {'centers_': torch.tensor}, codebook of linear quantization
             sklearn.cluster.KMeans, codebook of k-means quantization
         """
+
         rule_id = -1
         for idx, r in enumerate(self.rule):
             m = re.match(r[0], param_name)
